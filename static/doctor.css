@@ -1,0 +1,79 @@
+/* Reset some default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Page background */
+body {
+    background-color: #f4f6f9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Main heading */
+h1 {
+    margin-top: 30px;
+    color: #2c3e50;
+}
+
+/* Form container */
+.screen {
+    background-color: #ffffff;
+    margin-top: 30px;
+    padding: 25px 30px;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Sub heading */
+.screen h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #34495e;
+}
+
+/* Labels */
+label {
+    font-weight: bold;
+    color: #555;
+}
+
+/* Input fields */
+input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Focus effect */
+input[type="text"]:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+/* Submit button */
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Button hover */
+input[type="submit"]:hover {
+    background-color: #2980b9;
+}

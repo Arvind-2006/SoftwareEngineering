@@ -1,0 +1,51 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient's Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='patient.css') }}">
+
+</head>
+<body>
+    <h1>Give your ID here:</h1>
+    <form action="/get_medicine" method="post">
+        <input type="text" name="patient_id" required>
+        <button type="submit">Get Medicine</button>
+    </form>
+    
+    {% if error %}
+        <div class="error-box">
+            <p style="color:red;">{{ error }}</p>
+        </div>
+    {% endif %}
+
+    {% if message %}
+        <div class="result-box">
+            <h3>{{ message }}</h3>
+            <p><b>Medicine:</b> {{ medicine }}</p>
+            <p><b>Dosage:</b> {{ dosage }}</p>
+            <br>
+        </div>
+    {% endif %}
+
+    <script>
+        function getMedicine() {
+            const patientId = document.getElementById('patient_id').value;
+            if (patientId) {
+                // Simulate fetching medicine information
+                alert('Fetching medicine information for Patient ID: ' + patientId);
+                // Here you would typically make an API call to fetch the data
+            } else {
+                alert('Please enter a valid Patient ID.');
+            }
+        }   
+    </script>
+
+    <div class="display-result">
+        <!-- Medicine information will be displayed here -->
+        <h2>Medicine Information:</h2>
+        <p id="medicine-info">No data available.</p>
+
+    </div>
+</body>
+</html>

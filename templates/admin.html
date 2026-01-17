@@ -1,0 +1,23 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- <h1>Dispensing Logs will be shown here</h1>-->
+     
+    <h2>Dispensing Logs</h2>
+    <ul>
+        {% for log in logs %}
+            <li>
+                {{ log[0] }} - {{ log[1] }} - {{ log[2] }} - {{ log[3] }}
+            </li>
+        {% endfor %}
+    </ul>
+
+   
+
+
+</body>
+</html>

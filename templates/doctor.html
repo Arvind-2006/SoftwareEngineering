@@ -1,0 +1,30 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor's Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='doctor.css') }}">
+
+</head>
+<body>
+    <h1>Welcome to the Doctor's page</h1>
+    <div class="screen">
+        <h2>Give your Inputs below</h2>
+        
+        <form action="/add_prescription" method="post">
+            <label>Patient ID</label><br>
+            <input type="text" name="patient_id" required><br><br>
+
+            <label>Medicine Name</label><br>
+            <input type="text" name="medicine" required><br><br>
+
+            <label>Dosage</label><br>
+            <input type="text" name="dosage" required><br><br>
+
+            <input type="submit" value="Submit">
+        </form>
+
+    </div>
+
+</body>
+</html>
