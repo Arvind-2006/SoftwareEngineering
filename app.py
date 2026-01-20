@@ -1,25 +1,21 @@
 import psycopg2
 
-
 from flask import Flask, render_template, request
 from datetime import datetime
 
-conn = psycopg2.connect(
-    host="localhost",
-    database="amds",
-    user="postgres",
-    password="Arvind@88000"
-)
-
-cursor = conn.cursor()
-
-
+def get_db_connection():
+    return psycopg2.connect(
+        host="localhost",
+        database="amds",
+        user="postgres",
+        password="Arvind@88000"
+    )
 
 app = Flask(__name__)
 
 # Temporary storage (simulation)
 prescriptions = {}
-logs = []
+
 
 @app.route('/')
 def home():
@@ -35,30 +31,49 @@ def patient():
 
 @app.route('/admin')
 def admin():
-    cursor.execute("SELECT patient_id, medicine, timestamp, status FROM logs")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT patient_id, medicine, timestamp, status 
+        FROM logs
+    """)
     logs = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
     return render_template('admin.html', logs=logs)
+
 
 
 from psycopg2 import Error
 
 @app.route('/add_prescription', methods=['POST'])
 def add_prescription():
+    conn = None
     try:
-        patient_id = request.form['patient_id']
-        medicine = request.form['medicine']
-        dosage = request.form['dosage']
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
         cursor.execute("""
             INSERT INTO prescriptions (patient_id, medicine, dosage)
             VALUES (%s, %s, %s)
-        """, (patient_id, medicine, dosage))
+        """, (
+            request.form['patient_id'],
+            request.form['medicine'],
+            request.form['dosage']
+        ))
 
         conn.commit()
+        cursor.close()
+        conn.close()
+
         return "Prescription added successfully"
 
-    except Error as e:
-        conn.rollback()   
+    except Exception as e:
+        if conn:
+            conn.rollback()
         return f"Database error: {e}"
 
 
@@ -66,21 +81,24 @@ def add_prescription():
 def get_medicine():
     patient_id = request.form['patient_id']
 
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
     cursor.execute("""
         SELECT prescription_id, medicine, dosage, dispensed
         FROM prescriptions
-        WHERE patient_id = %s
+        WHERE patient_id = %s AND dispensed = FALSE
+        LIMIT 1
     """, (patient_id,))
 
     result = cursor.fetchone()
 
     if not result:
-        return render_template('patient.html', error="No prescription found")
+        cursor.close()
+        conn.close()
+        return render_template('patient.html', error="No pending prescription")
 
     prescription_id, medicine, dosage, dispensed = result
-
-    if dispensed:
-        return render_template('patient.html', error="Dose already taken")
 
     cursor.execute("""
         UPDATE prescriptions
@@ -95,6 +113,9 @@ def get_medicine():
 
     conn.commit()
 
+    cursor.close()
+    conn.close()
+
     return render_template(
         'patient.html',
         message="Medicine Dispensed Successfully",
@@ -105,16 +126,28 @@ def get_medicine():
 
 @app.route('/view_prescriptions/<patient_id>')
 def view_prescriptions(patient_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
     cursor.execute("""
         SELECT prescription_id, medicine, dosage, dispensed
         FROM prescriptions
         WHERE patient_id = %s
     """, (patient_id,))
+
     patient_prescriptions = cursor.fetchall()
-    return render_template('view_prescriptions.html', prescriptions=patient_prescriptions)
-@app.route('/view_logs')
-def view_logs():    
-    return render_template('view_logs.html', logs=logs)
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        'view_prescriptions.html',
+        prescriptions=patient_prescriptions
+    )
+
+# @app.route('/view_logs')
+# def view_logs():    
+#     return render_template('view_logs.html', logs=logs)
 
 
 
